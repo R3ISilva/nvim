@@ -176,8 +176,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<C-o>')
+vim.keymap.set('n', '<right>', '<C-i>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
@@ -326,7 +326,8 @@ require('lazy').setup({
   },
 
   {
-    'S1M0N38/love2d.nvim',
+    event = 'VeryLazy',
+    'R3ISilva/love2d.nvim',
     cmd = 'LoveRun',
     opts = {},
     keys = {
@@ -639,7 +640,15 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                disable = { 'missing-fields' },
+              },
+              workspace = {
+                library = {
+                  'E:/love-becky',
+                },
+                checkThirdParty = false,
+              },
             },
           },
         },
