@@ -29,7 +29,7 @@ What is Kickstart?
     what your configuration is doing, and modify it to suit your needs.
 
     Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
+      make Neovim your own! That might mean leaving Kickstart just the way it is for a while
     or immediately breaking it into modular pieces. It's up to you!
 
     If you don't know anything about Lua, I recommend taking some time to read through
@@ -204,6 +204,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'markdown',
+  callback = function()
+    vim.opt_local.conceallevel = 2
+    vim.opt_local.concealcursor = 'nc' -- optional: hide only in normal and command modes
+  end,
+})
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -254,6 +261,9 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+  },
+  {
+    'tpope/vim-fugitive',
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -325,16 +335,16 @@ require('lazy').setup({
     },
   },
 
-  {
-    'S1M0N38/love2d.nvim',
-    cmd = 'LoveRun',
-    opts = {},
-    keys = {
-      { '<leader>v', ft = 'lua', desc = 'LÖVE' },
-      { '<leader>vv', '<cmd>LoveRun<cr>', ft = 'lua', desc = 'Run LÖVE' },
-      { '<leader>vs', '<cmd>LoveStop<cr>', ft = 'lua', desc = 'Stop LÖVE' },
-    },
-  },
+  -- {
+  --   'S1M0N38/love2d.nvim',
+  --   cmd = 'LoveRun',
+  --   opts = {},
+  --   keys = {
+  --     { '<leader>v', ft = 'lua', desc = 'LÖVE' },
+  --     { '<leader>vv', '<cmd>LoveRun<cr>', ft = 'lua', desc = 'Run LÖVE' },
+  --     { '<leader>vs', '<cmd>LoveStop<cr>', ft = 'lua', desc = 'Stop LÖVE' },
+  --   },
+  -- },
 
   -- NOTE: Plugins can specify dependencies.
   --
@@ -343,6 +353,16 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('nvim-tree').setup()
+      vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = '[E]xplorer Toggle' })
+
+      vim.keymap.set('n', '<leader>o', ':NvimTreeFindFile<CR>', { desc = 'Open NvimTree on current file' })
+    end,
+  },
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -719,32 +739,63 @@ require('lazy').setup({
     },
   },
   {
-    'olimorris/codecompanion.nvim',
-    config = true,
+    'epwalsh/obsidian.nvim',
+    version = '*', -- recommended, use latest release instead of latest commit
+    lazy = true,
+    ft = 'markdown',
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+    --   -- refer to `:h file-pattern` for more examples
+    --   "BufReadPre path/to/my-vault/*.md",
+    --   "BufNewFile path/to/my-vault/*.md",
+    -- },
     dependencies = {
+      -- Required.
       'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
+
+      -- see below for full list of optional dependencies 👇
     },
     opts = {
-      adapters = {
-        copilot = function()
-          return require('codecompanion.adapters').extend('copilot', {
-            schema = {
-              model = {
-                default = 'claude-3.7-sonnet',
-              },
-            },
-          })
-        end,
+      workspaces = {
+        {
+          name = 'nvim-notes',
+          path = 'C:/Projects/nvim-notes',
+        },
       },
+
+      -- see below for full list of options 👇
     },
   },
-  {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    config = true,
-  },
+
+  -- {
+  --   'olimorris/codecompanion.nvim',
+  --   config = true,
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-treesitter/nvim-treesitter',
+  --   },
+  --   opts = {
+  --     adapters = {
+  --       copilot = function()
+  --         return require('codecompanion.adapters').extend('copilot', {
+  --           schema = {
+  --             model = {
+  --               default = 'claude-3.7-sonnet',
+  --             },
+  --           },
+  --         })
+  --       end,
+  --     },
+  --   },
+  -- },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   cmd = 'Copilot',
+  --   event = 'InsertEnter',
+  --   config = true,
+  -- },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
