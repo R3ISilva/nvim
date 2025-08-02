@@ -782,7 +782,18 @@ require('lazy').setup({
       -- see below for full list of options 👇
     },
   },
-
+  {
+    {
+      'CopilotC-Nvim/CopilotChat.nvim',
+      dependencies = {
+        { 'nvim-lua/plenary.nvim', branch = 'master' },
+      },
+      build = 'make tiktoken',
+      opts = {
+        -- See Configuration section for options
+      },
+    },
+  },
   -- {
   --   'olimorris/codecompanion.nvim',
   --   config = true,
