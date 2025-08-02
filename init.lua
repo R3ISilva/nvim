@@ -358,10 +358,15 @@ require('lazy').setup({
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      require('nvim-tree').setup()
+      require('nvim-tree').setup {
+        sync_root_with_cwd = true,
+        respect_buf_cwd = true,
+        update_focused_file = {
+          enable = true,
+          update_cwd = true,
+        },
+      }
       vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = '[E]xplorer Toggle' })
-
-      vim.keymap.set('n', '<leader>o', ':NvimTreeFindFile<CR>', { desc = 'Open NvimTree on current file' })
     end,
   },
   { -- Fuzzy Finder (files, lsp, etc)
